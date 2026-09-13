@@ -1,85 +1,84 @@
-# Number Guessing Game
+# ?? Number Guessing Game — The Mind-Reader CLI
 
-A clean, beginner-friendly command-line Number Guessing Game built in pure Python. The game challenges players to guess a randomly generated number within a limited number of attempts across multiple difficulty levels, complete with real-time feedback, smart hints, score calculations, and persistent best-score tracking.
+> *Can you outsmart the algorithm before your attempts hit zero?*
 
-This project represents **Project 02** in my Python learning journey and GitHub portfolio.
+Welcome to **Project 02** of my Python Mastery & Portfolio Journey! ??
 
----
-
-## ?? Features
-
-* **Random Number Generation**: Dynamically generates unique secret numbers each game using Python's built-in \andom\ module.
-* **Three Difficulty Levels**: Choose between Easy (1–50), Medium (1–100), and Hard (1–500) modes.
-* **Higher / Lower Hints**: Immediate feedback guiding the player closer to the secret number.
-* **Smart Hints**: Unlocks contextual parity hints (EVEN / ODD) after consecutive incorrect attempts.
-* **Intelligent Score System**: Rewards higher difficulty and fewer attempts with dynamic multipliers.
-* **Persistent Best Score**: Stores and updates high scores locally in \scores.json\ across sessions.
-* **Robust Input Validation**: Safely handles non-numeric input, floats, negative numbers, out-of-range guesses, empty inputs, and EOF signals without consuming attempts or crashing.
-* **Replay & Navigation**: Interactive main menu and seamless replay workflow.
+Building on the foundations of my previous **Smart Calculator** project, this project levels up into interactive game theory, pseudo-random state generation, dynamic scoring mathematics, and resilient data persistence—all crafted in **pure Python** with zero external dependencies.
 
 ---
 
-## ?? Game Difficulties
+## ? What Makes This Project Special?
 
-| Difficulty | Number Range | Attempts Allowed | Score Multiplier |
-| :--------- | :----------- | :--------------- | :--------------- |
-| **Easy**   | 1 – 50       | 10               | 1x               |
-| **Medium** | 1 – 100      | 7                | 2x               |
-| **Hard**   | 1 – 500      | 5                | 3x               |
+Most beginner number guessing games are simple scripts that run once and quit. This project is built like a **production-ready CLI mini-game**:
 
----
-
-## ??? Technologies Used
-
-* **Language**: Python 3
-* **Libraries**: Python Standard Library only (\andom\, \json\, \os\)
-* **Environment**: Platform-independent CLI (Windows, macOS, Linux)
+* ?? **Cryptic Random Number Engine**: Unbiased target generation powered by Python's andom module.
+* ??? **Adaptive Difficulty Tiers**: From quick rounds to high-stakes number hunts across a 500-number span.
+* ?? **Smart Parity Radar**: Stuck after multiple guesses? The system detects your struggle and drops dynamic parity hints (Even vs. Odd).
+* ?? **Skill-Driven Score Multiplier**: Rewarding difficulty level and guess efficiency with a mathematical formula:
+  \text{Score} = \text{Difficulty Multiplier} \times \text{Remaining Attempts} \times 100
+* ?? **Session-Persistent Leaderboard**: Saves and loads your all-time high score to scores.json with self-healing corrupted JSON handling.
+* ??? **Bulletproof Input Armor**: Enter letters, floats, negative numbers, blank inputs, or press Ctrl+C—the game will never crash, and invalid inputs never cost you an attempt!
+* ?? **Seamless Game Loop**: Complete replay & menu system without needing to restart the Python process.
 
 ---
 
-## ?? Project Structure
+## ?? Difficulty Modes & Mechanics
 
-\\\	ext
+| Mode | Range | Attempts | Multiplier | Challenge Level |
+| :--- | :---: | :---: | :---: | :--- |
+| ?? **Easy** | 1 – 50 | **10** | **1x** | Warm-up / Casual |
+| ?? **Medium** | 1 – 100 | **7** | **2x** | Balanced Tactical Play |
+| ?? **Hard** | 1 – 500 | **5** | **3x** | Binary-Search Masterclass |
+
+---
+
+## ??? Step-by-Step Build Journey (What Was Done)
+
+This project was developed incrementally through **real engineering milestones** with full Git commit traceability:
+
+`	ext
+ba54e2f Initial project setup
+    ¦   +-- Configured repository structure, .gitignore, scores.json, requirements.txt
+86a2ee4 Add random number generation
+    ¦   +-- Integrated random.randint() with decoupled generate_number() function
+58a0c76 Add easy medium and hard difficulty modes
+    ¦   +-- Implemented multi-tier configuration mapping and select_difficulty()
+84814ff Add guessing logic and hints
+    ¦   +-- Built check_guess(), dynamic higher/lower hints, and smart parity clues
+d3da540 Add score calculation and best score
+    ¦   +-- Implemented mathematical scoring system with difficulty multipliers
+fc1aa20 Add persistent score storage
+    ¦   +-- Added JSON serialization (scores.json) with error recovery
+26e651b Add replay and game navigation
+    ¦   +-- Created interactive menu, 'How to Play' guide, and replay loops
+e333479 Improve input validation and error handling
+    ¦   +-- Built input shields against ValueError, empty strings, and EOF interrupts
+643facd Polish CLI experience and documentation
+        +-- Enhanced visual layout, ANSI-style boxes, and comprehensive docs
+`
+
+---
+
+## ?? Project Architecture
+
+`	ext
 number-guessing-game/
 ¦
-+-- main.py              # Main application logic & game loop
-+-- README.md            # Comprehensive project documentation
-+-- requirements.txt     # Dependency definition (standard library only)
-+-- .gitignore           # Git ignore file for Python cache and environments
-+-- scores.json          # Persistent high-score data file
-\\\
++-- main.py              # Single-responsibility modular game engine
++-- scores.json          # Persistent JSON high-score record
++-- requirements.txt     # Dependency definition (Pure Standard Library)
++-- .gitignore           # Clean repository hygiene
++-- README.md            # Interactive documentation & project story
+`
 
 ---
 
-## ?? How to Run
+## ??? Live Terminal Walkthrough
 
-1. **Clone the repository**:
-   \\\ash
-   git clone https://github.com/Tejas0113/number-guessing-game.git
-   cd number-guessing-game
-   \\\
+Here is a glimpse of the game in action:
 
-2. **Run the application**:
-   \\\ash
-   python main.py
-   \\\
-
----
-
-## ?? How to Play
-
-1. Run \python main.py\ to open the main menu.
-2. Select **1. Play Game** and pick a difficulty (1, 2, or 3).
-3. The computer generates a secret number within the chosen range.
-4. Enter your guesses in the terminal.
-5. Pay attention to the **Too low!** or **Too high!** hints, as well as the **Smart Hint** after 3 attempts.
-6. Guess the number before your attempts run out to score points and set new high scores!
-
----
-
-## ?? Example Gameplay
-
-\\\	ext
+`	ext
 ========================================
         NUMBER GUESSING GAME
 ========================================
@@ -139,25 +138,42 @@ New Best: 800
 Do you want to play again? (y/n): n
 
 Returning to main menu...
-\\\
+`
 
 ---
 
-## ?? Learning Outcomes
+## ?? Quickstart Guide
 
-This project demonstrates core Python programming principles:
+### Prerequisites
+* Python 3.8 or higher installed on your machine.
 
-* **Variables & Data Types**: Storing strings, integers, tuples, and dictionaries.
-* **Control Flow & Branching**: \if\, \elif\, \else\ statements for guess comparisons and menu dispatch.
-* **Loops**: \while\ loops for the game cycle, replay prompts, and robust input validation.
-* **Functions & Modularity**: Breaking code down into small, single-responsibility functions.
-* **Randomness**: Generating pseudo-random numbers with \andom.randint()\.
-* **Exception Handling**: Using \	ry-except\ blocks (\ValueError\, \json.JSONDecodeError\, \OSError\) for crash-proof CLI operation.
-* **File I/O & JSON Serialization**: Reading from and writing to \scores.json\ safely.
-* **Git & Version Control**: Building a realistic commit history through structured milestones.
+### Installation & Execution
+`ash
+# 1. Clone the repository
+git clone https://github.com/Tejas0113/number-guessing-game.git
+
+# 2. Navigate to the project directory
+cd number-guessing-game
+
+# 3. Launch the game
+python main.py
+`
 
 ---
 
-## ?? License
+## ?? Skills & Engineering Concepts Demonstrated
 
-This project is open-source and available under the [MIT License](LICENSE).
+* ?? **Clean Modular Code**: Zero monolithic functions—each component has a single purpose.
+* ?? **State Management**: Handling attempt counters, difficulty state, and target values across loops.
+* ??? **Defensive Programming**: Handling empty inputs, invalid types (ValueError), and file exceptions (json.JSONDecodeError, OSError).
+* ?? **Data Persistence**: Safe JSON reading and writing with fallback default states.
+* ?? **Mathematical Logic**: Formulating score incentives based on difficulty and attempt conservation.
+* ?? **Version Control Discipline**: Maintaining a clear, chronological Git history with meaningful milestone commits.
+
+---
+
+## ?? License & Author
+
+Crafted with ?? by **[Tejas](https://github.com/Tejas0113)** as part of the Python Learning & Portfolio Roadmap.
+
+Licensed under the **MIT License**.
