@@ -122,71 +122,139 @@ def select_difficulty():
 
 
 def play_game():
-    """Run one single session of the number guessing game and update best score."""
-    name, min_val, max_val, max_attempts, multiplier = select_difficulty()
-    secret_number = generate_number(min_val, max_val)
+    """Run the main gameplay loop with replay options."""
+    while True:
+        name, min_val, max_val, max_attempts, multiplier = select_difficulty()
+        secret_number = generate_number(min_val, max_val)
 
-    print("========================================")
-    print("             GAME START                 ")
-    print("========================================")
-    print(f"I'm thinking of a number between {min_val} and {max_val}.")
-    print(f"You have {max_attempts} attempts.")
-    print("Good luck!\n")
+        print("========================================")
+        print("             GAME START                 ")
+        print("========================================")
+        print(f"I'm thinking of a number between {min_val} and {max_val}.")
+        print(f"You have {max_attempts} attempts.")
+        print("Good luck!\n")
 
-    attempts_used = 0
+        attempts_used = 0
+        game_won = False
 
-    while attempts_used < max_attempts:
-        user_input = input(f"Attempt {attempts_used + 1} of {max_attempts} - Enter your guess: ").strip()
+        while attempts_used < max_attempts:
+            user_input = input(f"Attempt {attempts_used + 1} of {max_attempts} - Enter your guess: ").strip()
 
-        try:
-            guess = int(user_input)
-        except ValueError:
-            print("Invalid input. Please enter a whole number.\n")
-            continue
+            try:
+                guess = int(user_input)
+            except ValueError:
+                print("Invalid input. Please enter a whole number.\n")
+                continue
 
-        if guess < min_val or guess > max_val:
-            print(f"Please enter a number between {min_val} and {max_val}.\n")
-            continue
+            if guess < min_val or guess > max_val:
+                print(f"Please enter a number between {min_val} and {max_val}.\n")
+                continue
 
-        attempts_used += 1
-        result = check_guess(guess, secret_number)
+            attempts_used += 1
+            result = check_guess(guess, secret_number)
 
-        if result == "correct":
-            print("\n========================================")
-            print("              YOU WON!                  ")
+            if result == "correct":
+                print("\n========================================")
+                print("              YOU WON!                  ")
+                print("========================================")
+                print("Correct! You guessed the number.")
+                print(f"Attempts used: {attempts_used}")
+                
+                score = calculate_score(attempts_used, max_attempts, multiplier)
+                print(f"Score: {score}")
+
+                current_best = load_best_score()
+                if score > current_best:
+                    print("\n?? NEW BEST SCORE! ??")
+                    print(f"Previous Best: {current_best}")
+                    print(f"New Best: {score}")
+                    save_best_score(score)
+                print()
+                game_won = True
+                break
+
+            give_hint(guess, secret_number, attempts_used, max_attempts)
+
+        if not game_won:
             print("========================================")
-            print("Correct! You guessed the number.")
-            print(f"Attempts used: {attempts_used}")
-            
-            score = calculate_score(attempts_used, max_attempts, multiplier)
-            print(f"Score: {score}")
+            print("             GAME OVER                  ")
+            print("========================================")
+            print("You used all your attempts.")
+            print(f"The correct number was: {secret_number}")
+            print("Score: 0\n")
 
-            current_best = load_best_score()
-            if score > current_best:
-                print("\n?? NEW BEST SCORE! ??")
-                print(f"Previous Best: {current_best}")
-                print(f"New Best: {score}")
-                save_best_score(score)
-            print()
-            return True, score
+        # Ask player for replay
+        while True:
+            replay_choice = input("Do you want to play again? (y/n): ").strip().lower()
+            if replay_choice in ("y", "yes"):
+                print("\nStarting a new game...\n")
+                break
+            elif replay_choice in ("n", "no"):
+                print("\nReturning to main menu...\n")
+                return
+            else:
+                print("Please enter 'y' for yes or 'n' for no.")
 
-        give_hint(guess, secret_number, attempts_used, max_attempts)
 
+def view_best_score():
+    """Display current high score or message if no high score exists."""
+    best = load_best_score()
     print("========================================")
-    print("             GAME OVER                  ")
+    print("             BEST SCORE                 ")
     print("========================================")
-    print("You used all your attempts.")
-    print(f"The correct number was: {secret_number}")
-    print("Score: 0\n")
-    return False, 0
+    if best > 0:
+        print(f"Best Score: {best}")
+    else:
+        print("Best Score: No score yet")
+    print("========================================\n")
 
 
-def main():
-    """Main application entry point."""
+def display_how_to_play():
+    """Display rules and instructions on how to play the game."""
+    print("========================================")
+    print("             HOW TO PLAY                ")
+    print("========================================")
+    print("1. Choose a difficulty (Easy, Medium, Hard).")
+    print("2. The computer generates a secret number.")
+    print("3. Try to guess the number in the given range.")
+    print("4. You receive HIGHER or LOWER hints.")
+    print("5. After 3 incorrect guesses, you get a smart hint.")
+    print("6. You have limited attempts per difficulty.")
+    print("7. Guess correctly to earn points.")
+    print("8. Use fewer attempts to score higher.")
+    print("9. Beat your previous best score!")
+    print("========================================\n")
+
+
+def display_menu():
+    """Display the primary menu options."""
     print("========================================")
     print("        NUMBER GUESSING GAME            ")
     print("========================================")
-    play_game()
+    print("1. Play Game")
+    print("2. View Best Score")
+    print("3. How to Play")
+    print("4. Exit")
+    print("========================================")
+
+
+def main():
+    """Main application entry point with interactive menu loop."""
+    while True:
+        display_menu()
+        choice = input("Choose an option: ").strip()
+
+        if choice == "1":
+            play_game()
+        elif choice == "2":
+            view_best_score()
+        elif choice == "3":
+            display_how_to_play()
+        elif choice == "4":
+            print("\nThank you for playing Number Guessing Game! Goodbye!\n")
+            break
+        else:
+            print("\nInvalid choice. Please select an option from 1 to 4.\n")
 
 
 if __name__ == "__main__":
