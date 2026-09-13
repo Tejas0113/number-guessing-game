@@ -3,7 +3,12 @@ Number Guessing Game - Project 02
 A beginner-friendly command-line number guessing game in Python.
 """
 
+import json
+import os
 import random
+
+# Score persistence file path
+SCORE_FILE = "scores.json"
 
 # Difficulty configuration mapping: (name, min_val, max_val, max_attempts, multiplier)
 DIFFICULTIES = {
@@ -14,6 +19,35 @@ DIFFICULTIES = {
 
 # Base score constant for clean score calculation
 BASE_SCORE = 100
+
+
+def load_best_score() -> int:
+    """
+    Load the best score from the local JSON file.
+    Safely handles missing, empty, or corrupted JSON files.
+    """
+    if not os.path.exists(SCORE_FILE):
+        return 0
+
+    try:
+        with open(SCORE_FILE, "r", encoding="utf-8") as file:
+            data = json.load(file)
+            return int(data.get("best_score", 0))
+    except (json.JSONDecodeError, ValueError, OSError, TypeError):
+        return 0
+
+
+def save_best_score(score: int) -> bool:
+    """
+    Save the new best score to scores.json safely.
+    Returns True if save was successful, False otherwise.
+    """
+    try:
+        with open(SCORE_FILE, "w", encoding="utf-8") as file:
+            json.dump({"best_score": score}, file, indent=4)
+        return True
+    except OSError:
+        return False
 
 
 def generate_number(min_value: int, max_value: int) -> int:
@@ -88,7 +122,7 @@ def select_difficulty():
 
 
 def play_game():
-    """Run one single session of the number guessing game."""
+    """Run one single session of the number guessing game and update best score."""
     name, min_val, max_val, max_attempts, multiplier = select_difficulty()
     secret_number = generate_number(min_val, max_val)
 
@@ -125,7 +159,15 @@ def play_game():
             print(f"Attempts used: {attempts_used}")
             
             score = calculate_score(attempts_used, max_attempts, multiplier)
-            print(f"Score: {score}\n")
+            print(f"Score: {score}")
+
+            current_best = load_best_score()
+            if score > current_best:
+                print("\n?? NEW BEST SCORE! ??")
+                print(f"Previous Best: {current_best}")
+                print(f"New Best: {score}")
+                save_best_score(score)
+            print()
             return True, score
 
         give_hint(guess, secret_number, attempts_used, max_attempts)
