@@ -1,84 +1,69 @@
-# ?? Number Guessing Game — The Mind-Reader CLI
+# Number Guessing Game - CLI Mini-Game
 
-> *Can you outsmart the algorithm before your attempts hit zero?*
+Can you outsmart the algorithm before your attempts hit zero?
 
-Welcome to **Project 02** of my Python Mastery & Portfolio Journey! ??
-
-Building on the foundations of my previous **Smart Calculator** project, this project levels up into interactive game theory, pseudo-random state generation, dynamic scoring mathematics, and resilient data persistence—all crafted in **pure Python** with zero external dependencies.
+Welcome to **Project 02** of my Python learning and GitHub portfolio roadmap! Building upon the foundations of the previous Smart Calculator project, this project introduces interactive gameplay loops, pseudo-random number generation, dynamic scoring mathematics, input validation shields, and persistent high-score tracking using pure standard Python.
 
 ---
 
-## ? What Makes This Project Special?
+## 1. Project Overview
 
-Most beginner number guessing games are simple scripts that run once and quit. This project is built like a **production-ready CLI mini-game**:
+Most introductory number guessing scripts run once and immediately terminate. This project is structured as a resilient, full-featured terminal application:
 
-* ?? **Cryptic Random Number Engine**: Unbiased target generation powered by Python's andom module.
-* ??? **Adaptive Difficulty Tiers**: From quick rounds to high-stakes number hunts across a 500-number span.
-* ?? **Smart Parity Radar**: Stuck after multiple guesses? The system detects your struggle and drops dynamic parity hints (Even vs. Odd).
-* ?? **Skill-Driven Score Multiplier**: Rewarding difficulty level and guess efficiency with a mathematical formula:
-  \text{Score} = \text{Difficulty Multiplier} \times \text{Remaining Attempts} \times 100
-* ?? **Session-Persistent Leaderboard**: Saves and loads your all-time high score to scores.json with self-healing corrupted JSON handling.
-* ??? **Bulletproof Input Armor**: Enter letters, floats, negative numbers, blank inputs, or press Ctrl+C—the game will never crash, and invalid inputs never cost you an attempt!
-* ?? **Seamless Game Loop**: Complete replay & menu system without needing to restart the Python process.
+- **Random Number Engine**: Unbiased target generation powered by Python built-in `random.randint()`.
+- **Adaptive Difficulty Tiers**: Three distinct difficulty modes with scaled ranges, attempt limits, and scoring multipliers.
+- **Smart Parity Clues**: Automatically detects prolonged attempts and provides dynamic parity hints (Even vs. Odd) after 3 failed guesses.
+- **Dynamic Score Multipliers**: A mathematical scoring system that rewards harder difficulties and fewer attempts:
+  Score = Difficulty Multiplier * Remaining Attempts * 100
+- **Persistent High Score**: Automatically stores and loads personal best scores from `scores.json`, with built-in recovery against corrupted or empty files.
+- **Defensive Input Validation**: Safely handles non-numeric strings, decimal floats, negative numbers, out-of-range guesses, blank inputs, and keyboard interrupts without crashing or consuming attempts.
+- **Seamless Replay Loop**: Continue playing multiple rounds or navigate back to the main menu without restarting the program.
 
 ---
 
-## ?? Difficulty Modes & Mechanics
+## 2. Difficulty Modes and Mechanics
 
-| Mode | Range | Attempts | Multiplier | Challenge Level |
+| Difficulty | Number Range | Attempts Allowed | Score Multiplier | Gameplay Style |
 | :--- | :---: | :---: | :---: | :--- |
-| ?? **Easy** | 1 – 50 | **10** | **1x** | Warm-up / Casual |
-| ?? **Medium** | 1 – 100 | **7** | **2x** | Balanced Tactical Play |
-| ?? **Hard** | 1 – 500 | **5** | **3x** | Binary-Search Masterclass |
+| **Easy** | 1 - 50 | 10 | 1x | Casual / Warm-up |
+| **Medium** | 1 - 100 | 7 | 2x | Balanced Tactical Play |
+| **Hard** | 1 - 500 | 5 | 3x | Advanced Binary-Search |
 
 ---
 
-## ??? Step-by-Step Build Journey (What Was Done)
+## 3. Step-by-Step Build Journey
 
-This project was developed incrementally through **real engineering milestones** with full Git commit traceability:
+This project was built incrementally using a clean Git workflow, where each milestone was tested and committed:
 
-`	ext
-ba54e2f Initial project setup
-    ¦   +-- Configured repository structure, .gitignore, scores.json, requirements.txt
-86a2ee4 Add random number generation
-    ¦   +-- Integrated random.randint() with decoupled generate_number() function
-58a0c76 Add easy medium and hard difficulty modes
-    ¦   +-- Implemented multi-tier configuration mapping and select_difficulty()
-84814ff Add guessing logic and hints
-    ¦   +-- Built check_guess(), dynamic higher/lower hints, and smart parity clues
-d3da540 Add score calculation and best score
-    ¦   +-- Implemented mathematical scoring system with difficulty multipliers
-fc1aa20 Add persistent score storage
-    ¦   +-- Added JSON serialization (scores.json) with error recovery
-26e651b Add replay and game navigation
-    ¦   +-- Created interactive menu, 'How to Play' guide, and replay loops
-e333479 Improve input validation and error handling
-    ¦   +-- Built input shields against ValueError, empty strings, and EOF interrupts
-643facd Polish CLI experience and documentation
-        +-- Enhanced visual layout, ANSI-style boxes, and comprehensive docs
-`
+- **Milestone 1 - Project Setup**: Configured repository structure, `.gitignore`, initial `scores.json`, `requirements.txt`, and entry point.
+- **Milestone 2 - Random Number Generation**: Integrated the `random` module with decoupled `generate_number()` function.
+- **Milestone 3 - Difficulty Modes**: Added Easy, Medium, and Hard configurations with custom ranges and attempt limits.
+- **Milestone 4 - Guessing Logic and Hints**: Implemented `check_guess()`, dynamic higher/lower feedback, and smart parity clues.
+- **Milestone 5 - Scoring System**: Designed mathematical scoring formula and session score tracking.
+- **Milestone 6 - Persistent Score Storage**: Added JSON serialization (`scores.json`) with safe exception handling (`OSError`, `json.JSONDecodeError`).
+- **Milestone 7 - Replay and Game Navigation**: Built the interactive main menu, How to Play guide, and replay flow.
+- **Milestone 8 - Input Validation**: Protected all input prompts against invalid types, empty strings, and EOF interrupts.
+- **Milestone 9 - Polish and Usability**: Refined terminal layout, user messages, and clean documentation.
 
 ---
 
-## ?? Project Architecture
+## 4. Project Structure
 
-`	ext
+```text
 number-guessing-game/
-¦
-+-- main.py              # Single-responsibility modular game engine
-+-- scores.json          # Persistent JSON high-score record
-+-- requirements.txt     # Dependency definition (Pure Standard Library)
-+-- .gitignore           # Clean repository hygiene
-+-- README.md            # Interactive documentation & project story
-`
+|
+|-- main.py              # Main application logic and single-responsibility functions
+|-- scores.json          # Persistent high-score JSON file
+|-- requirements.txt     # Standard library dependencies (zero third-party packages)
+|-- .gitignore           # Git ignore rules for Python artifacts
+-- README.md            # Project documentation and user guide
+```
 
 ---
 
-## ??? Live Terminal Walkthrough
+## 5. Live Terminal Gameplay Example
 
-Here is a glimpse of the game in action:
-
-`	ext
+```text
 ========================================
         NUMBER GUESSING GAME
 ========================================
@@ -105,7 +90,7 @@ Attempts available: 7
 ========================================
              GAME START
 ========================================
-I'm thinking of a number between 1 and 100.
+I am thinking of a number between 1 and 100.
 You have 7 attempts.
 Good luck!
 
@@ -119,7 +104,7 @@ Attempts remaining: 5
 
 Attempt 3 of 7 - Enter your guess: 37
 Too high! Try a lower number.
-?? Hint: The secret number is EVEN.
+Hint: The secret number is EVEN.
 Attempts remaining: 4
 
 Attempt 4 of 7 - Enter your guess: 32
@@ -131,49 +116,65 @@ Correct! You guessed the number.
 Attempts used: 4
 Score: 800
 
-?? NEW BEST SCORE! ??
+NEW BEST SCORE!
 Previous Best: 0
 New Best: 800
 
 Do you want to play again? (y/n): n
 
 Returning to main menu...
-`
+```
 
 ---
 
-## ?? Quickstart Guide
+## 6. How to Run Locally
 
 ### Prerequisites
-* Python 3.8 or higher installed on your machine.
+- Python 3.8 or higher installed on your system.
 
-### Installation & Execution
-`ash
-# 1. Clone the repository
-git clone https://github.com/Tejas0113/number-guessing-game.git
+### Steps
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Tejas0113/number-guessing-game.git
+   ```
 
-# 2. Navigate to the project directory
-cd number-guessing-game
+2. **Navigate into the project directory**:
+   ```bash
+   cd number-guessing-game
+   ```
 
-# 3. Launch the game
-python main.py
-`
-
----
-
-## ?? Skills & Engineering Concepts Demonstrated
-
-* ?? **Clean Modular Code**: Zero monolithic functions—each component has a single purpose.
-* ?? **State Management**: Handling attempt counters, difficulty state, and target values across loops.
-* ??? **Defensive Programming**: Handling empty inputs, invalid types (ValueError), and file exceptions (json.JSONDecodeError, OSError).
-* ?? **Data Persistence**: Safe JSON reading and writing with fallback default states.
-* ?? **Mathematical Logic**: Formulating score incentives based on difficulty and attempt conservation.
-* ?? **Version Control Discipline**: Maintaining a clear, chronological Git history with meaningful milestone commits.
+3. **Run the application**:
+   ```bash
+   python main.py
+   ```
 
 ---
 
-## ?? License & Author
+## 7. How to Play
 
-Crafted with ?? by **[Tejas](https://github.com/Tejas0113)** as part of the Python Learning & Portfolio Roadmap.
+1. Run `python main.py` to open the main menu.
+2. Select **1. Play Game** and pick a difficulty level (1, 2, or 3).
+3. The computer generates a secret number within the chosen range.
+4. Enter your guess in the prompt.
+5. Use the **Too low!** or **Too high!** clues, as well as the **Smart Parity Hint** after 3 attempts, to narrow down your next guess.
+6. Guess correctly before running out of attempts to score points and set a new personal best!
 
-Licensed under the **MIT License**.
+---
+
+## 8. Learning Outcomes
+
+This project demonstrates core Python programming and software engineering fundamentals:
+
+- **Modular Functions**: Single-responsibility functions with clear inputs and return values.
+- **Control Flow and Logic**: Nested condition branching (`if-elif-else`) for guess comparison and menu handling.
+- **Iteration and State**: `while` loops managing gameplay sessions, attempt counters, and replay cycles.
+- **Defensive Exception Handling**: Protecting user inputs against `ValueError`, `json.JSONDecodeError`, and `OSError`.
+- **JSON File Persistence**: Reading, validating, and writing persistent data locally.
+- **Clean Code and CLI Design**: Readable snake_case identifiers, structured output headers, and clear user prompts.
+- **Git Version Control**: Clean, chronological commit history covering every engineering milestone.
+
+---
+
+## 9. License
+
+This project is open-source and available under the [MIT License](LICENSE).
