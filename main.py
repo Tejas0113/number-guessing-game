@@ -7,7 +7,7 @@ import json
 import os
 import random
 
-# Score persistence file path
+# File path used for persistent high score storage
 SCORE_FILE = "scores.json"
 
 # Difficulty configuration mapping: (name, min_val, max_val, max_attempts, multiplier)
@@ -17,7 +17,7 @@ DIFFICULTIES = {
     "3": ("Hard", 1, 500, 5, 3),
 }
 
-# Base score constant for clean score calculation
+# Base score constant used in score calculation formula
 BASE_SCORE = 100
 
 
@@ -32,7 +32,9 @@ def load_best_score() -> int:
     try:
         with open(SCORE_FILE, "r", encoding="utf-8") as file:
             data = json.load(file)
-            return int(data.get("best_score", 0))
+            if isinstance(data, dict):
+                return int(data.get("best_score", 0))
+            return 0
     except (json.JSONDecodeError, ValueError, OSError, TypeError):
         return 0
 
@@ -75,7 +77,7 @@ def give_hint(guess: int, target: int, attempts_used: int, max_attempts: int):
     elif result == "too_high":
         print("Too high! Try a lower number.")
 
-    # Smart hint after multiple failed attempts
+    # Smart hint after 3 attempts if the game is still going
     if attempts_used >= 3 and remaining > 0:
         if target % 2 == 0:
             print("?? Hint: The secret number is EVEN.")
@@ -100,7 +102,7 @@ def calculate_score(attempts_used: int, max_attempts: int, multiplier: int) -> i
 
 
 def select_difficulty():
-    """Prompt the user to select a game difficulty and return the configuration tuple."""
+    """Prompt the user to select a game difficulty with robust input validation."""
     while True:
         print("========================================")
         print("          SELECT DIFFICULTY             ")
@@ -109,22 +111,35 @@ def select_difficulty():
         print("2. Medium (Range: 1 - 100, Attempts: 7)")
         print("3. Hard   (Range: 1 - 500, Attempts: 5)")
         print("========================================")
-        
-        choice = input("Choose difficulty (1-3): ").strip()
-        if choice in DIFFICULTIES:
-            name, min_val, max_val, attempts, multiplier = DIFFICULTIES[choice]
+
+        try:
+            raw_input = input("Choose difficulty (1-3): ").strip()
+        except (KeyboardInterrupt, EOFError):
+            print("\nReturning to main menu...\n")
+            return None
+
+        if not raw_input:
+            print("\nInput cannot be empty. Please select 1, 2, or 3.\n")
+            continue
+
+        if raw_input in DIFFICULTIES:
+            name, min_val, max_val, attempts, multiplier = DIFFICULTIES[raw_input]
             print(f"\nYou selected: {name.upper()}")
             print(f"Number range: {min_val} - {max_val}")
             print(f"Attempts available: {attempts}\n")
             return name, min_val, max_val, attempts, multiplier
-        
-        print("\nInvalid choice. Please select 1, 2, or 3.\n")
+
+        print("\nInvalid choice. Please select an option from 1 to 3.\n")
 
 
 def play_game():
-    """Run the main gameplay loop with replay options."""
+    """Run the main gameplay loop with replay options and thorough input validation."""
     while True:
-        name, min_val, max_val, max_attempts, multiplier = select_difficulty()
+        diff_config = select_difficulty()
+        if diff_config is None:
+            return
+
+        name, min_val, max_val, max_attempts, multiplier = diff_config
         secret_number = generate_number(min_val, max_val)
 
         print("========================================")
@@ -138,7 +153,15 @@ def play_game():
         game_won = False
 
         while attempts_used < max_attempts:
-            user_input = input(f"Attempt {attempts_used + 1} of {max_attempts} - Enter your guess: ").strip()
+            try:
+                user_input = input(f"Attempt {attempts_used + 1} of {max_attempts} - Enter your guess: ").strip()
+            except (KeyboardInterrupt, EOFError):
+                print("\nGame session cancelled. Returning to main menu...\n")
+                return
+
+            if not user_input:
+                print("Input cannot be empty. Please enter a whole number.\n")
+                continue
 
             try:
                 guess = int(user_input)
@@ -159,7 +182,7 @@ def play_game():
                 print("========================================")
                 print("Correct! You guessed the number.")
                 print(f"Attempts used: {attempts_used}")
-                
+
                 score = calculate_score(attempts_used, max_attempts, multiplier)
                 print(f"Score: {score}")
 
@@ -183,9 +206,14 @@ def play_game():
             print(f"The correct number was: {secret_number}")
             print("Score: 0\n")
 
-        # Ask player for replay
+        # Replay prompt loop
         while True:
-            replay_choice = input("Do you want to play again? (y/n): ").strip().lower()
+            try:
+                replay_choice = input("Do you want to play again? (y/n): ").strip().lower()
+            except (KeyboardInterrupt, EOFError):
+                print("\nReturning to main menu...\n")
+                return
+
             if replay_choice in ("y", "yes"):
                 print("\nStarting a new game...\n")
                 break
@@ -193,7 +221,7 @@ def play_game():
                 print("\nReturning to main menu...\n")
                 return
             else:
-                print("Please enter 'y' for yes or 'n' for no.")
+                print("Invalid input. Please enter 'y' for yes or 'n' for no.")
 
 
 def view_best_score():
@@ -242,7 +270,15 @@ def main():
     """Main application entry point with interactive menu loop."""
     while True:
         display_menu()
-        choice = input("Choose an option: ").strip()
+        try:
+            choice = input("Choose an option: ").strip()
+        except (KeyboardInterrupt, EOFError):
+            print("\n\nGoodbye!\n")
+            break
+
+        if not choice:
+            print("\nInput cannot be empty. Please select an option from 1 to 4.\n")
+            continue
 
         if choice == "1":
             play_game()
