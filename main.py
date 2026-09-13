@@ -5,12 +5,15 @@ A beginner-friendly command-line number guessing game in Python.
 
 import random
 
-# Difficulty configuration mapping: (name, min_val, max_val, max_attempts)
+# Difficulty configuration mapping: (name, min_val, max_val, max_attempts, multiplier)
 DIFFICULTIES = {
-    "1": ("Easy", 1, 50, 10),
-    "2": ("Medium", 1, 100, 7),
-    "3": ("Hard", 1, 500, 5),
+    "1": ("Easy", 1, 50, 10, 1),
+    "2": ("Medium", 1, 100, 7, 2),
+    "3": ("Hard", 1, 500, 5, 3),
 }
+
+# Base score constant for clean score calculation
+BASE_SCORE = 100
 
 
 def generate_number(min_value: int, max_value: int) -> int:
@@ -49,6 +52,19 @@ def give_hint(guess: int, target: int, attempts_used: int, max_attempts: int):
         print(f"Attempts remaining: {remaining}\n")
 
 
+def calculate_score(attempts_used: int, max_attempts: int, multiplier: int) -> int:
+    """
+    Calculate game score based on difficulty and remaining attempts.
+    
+    Formula:
+        remaining_attempts = max_attempts - attempts_used + 1
+        score = multiplier * remaining_attempts * BASE_SCORE
+    """
+    remaining_attempts = max_attempts - attempts_used + 1
+    score = multiplier * remaining_attempts * BASE_SCORE
+    return max(0, score)
+
+
 def select_difficulty():
     """Prompt the user to select a game difficulty and return the configuration tuple."""
     while True:
@@ -62,18 +78,18 @@ def select_difficulty():
         
         choice = input("Choose difficulty (1-3): ").strip()
         if choice in DIFFICULTIES:
-            name, min_val, max_val, attempts = DIFFICULTIES[choice]
+            name, min_val, max_val, attempts, multiplier = DIFFICULTIES[choice]
             print(f"\nYou selected: {name.upper()}")
             print(f"Number range: {min_val} - {max_val}")
             print(f"Attempts available: {attempts}\n")
-            return name, min_val, max_val, attempts
+            return name, min_val, max_val, attempts, multiplier
         
         print("\nInvalid choice. Please select 1, 2, or 3.\n")
 
 
 def play_game():
     """Run one single session of the number guessing game."""
-    name, min_val, max_val, max_attempts = select_difficulty()
+    name, min_val, max_val, max_attempts, multiplier = select_difficulty()
     secret_number = generate_number(min_val, max_val)
 
     print("========================================")
@@ -106,8 +122,11 @@ def play_game():
             print("              YOU WON!                  ")
             print("========================================")
             print("Correct! You guessed the number.")
-            print(f"Attempts used: {attempts_used}\n")
-            return True, attempts_used, max_attempts, name
+            print(f"Attempts used: {attempts_used}")
+            
+            score = calculate_score(attempts_used, max_attempts, multiplier)
+            print(f"Score: {score}\n")
+            return True, score
 
         give_hint(guess, secret_number, attempts_used, max_attempts)
 
@@ -115,8 +134,9 @@ def play_game():
     print("             GAME OVER                  ")
     print("========================================")
     print("You used all your attempts.")
-    print(f"The correct number was: {secret_number}\n")
-    return False, attempts_used, max_attempts, name
+    print(f"The correct number was: {secret_number}")
+    print("Score: 0\n")
+    return False, 0
 
 
 def main():
